@@ -1,0 +1,78 @@
+body,
+html {
+  background-color: #444;
+  color: #ddd;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.logotype {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  height: 70vmin;
+  width: 70vmin;
+  max-height: 40vh;
+  max-width: 40vh;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.name .main {
+  font-family: "Jura", sans-serif;
+  font-size: 30vmin;
+}
+
+.name .sub {
+  font-family: "Jura", sans-serif;
+  font-size: 4vmin;
+  text-align: center;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: #373737;
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  height: 12vh;
+  width: 12vh;
+  transition: 0.2s;
+  text-align: center;
+  text-decoration: none;
+}
+
+.contact {
+  margin-top: 10vmin;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+  max-width: 100vh;
+}
+
+.circle:hover {
+  cursor: pointer;
+  background-color: #555;
+}
+
+.circle i {
+  font-size: 5vh;
+  text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
+  color: white;
+}

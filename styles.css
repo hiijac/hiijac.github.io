@@ -1,13 +1,23 @@
 body,
 html {
+  margin:0;
+  padding:0;
   background-color: #444;
   color: #ddd;
-  width: 100%;
-  height: 100%;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
+}
+
+.flexcol {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: stretch;
+  min-height: 100vh;
+  gap: 3rem;
+  margin: 2rem;
 }
 
 .logotype {
@@ -19,26 +29,25 @@ html {
 }
 
 .logo {
-  height: 70vmin;
-  width: 70vmin;
-  max-height: 40vh;
-  max-width: 40vh;
+  height:clamp(4rem,min(70vw,40vh),20rem);
+  width:clamp(4rem,min(70vw,40vh),20rem);
 }
 
 .name {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  text-align: center;
 }
 
 .name .main {
   font-family: "Jura", sans-serif;
-  font-size: 30vmin;
+  font-size: clamp(2rem,25vmin,15rem);
 }
 
 .name .sub {
   font-family: "Jura", sans-serif;
-  font-size: 4vmin;
+  font-size: clamp(1.5rem,4vmin,2.125rem);
   text-align: center;
 }
 
@@ -50,29 +59,60 @@ html {
   background-color: #373737;
   box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.4);
   border-radius: 50%;
-  height: 12vh;
-  width: 12vh;
+  height: 7rem;
+  width: 7rem;
   transition: 0.2s;
   text-align: center;
   text-decoration: none;
+  cursor: pointer;
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3rem;
+}
+
+.info p {
+  font-family: "Jura", sans-serif;
+  font-size: clamp(1rem,3vmin,2rem);
+  flex: 0 1 auto;
+  max-width: fit-content;
+  min-width: 0;
 }
 
 .contact {
-  margin-top: 10vmin;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  width: 100%;
-  max-width: 100vh;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-self: stretch;
+}
+
+.circle:nth-child(1) {
+  margin-right: 7rem;
+}
+.circle:nth-child(2) {
+  margin-left: 7rem;
 }
 
 .circle:hover {
-  cursor: pointer;
   background-color: #555;
 }
 
 .circle i {
-  font-size: 5vh;
+  font-size: 3rem;
   text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
   color: white;
+}
+
+@media (max-width: 720px) {
+  .info {
+    flex-direction: column;
+    justify-content: stretch;
+  }
+  .circle {
+    margin: 0 !important;
+  }
 }

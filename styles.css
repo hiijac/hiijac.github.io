@@ -17,7 +17,8 @@ html {
   align-items: stretch;
   min-height: 100vh;
   gap: 3rem;
-  margin: 2rem;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
 .logotype {

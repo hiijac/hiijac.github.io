@@ -2,12 +2,36 @@ const slow = 1.5
 const REPEAT = 15000 * slow
 const PARTS = 3;
 const TRACER_LENGTH = REPEAT / 400
-const SHAPE = [[54, 50],[38, 41],[38, 82],[28, 76.3],[28.2, 23.6],[63.9, 44.2]]
-const tracerPoints = [[36, 21.85], [72, 44], [43.5, 61], [43.5, 26], [84, 50], [81.38, 51.95]]
-const lineLenghts = mapSubsequent(tracerPoints, hypdiff)
-const lenghtSum = lineLenghts.reduce((a, c) => a + c)
-const lineDurations = lineLenghts.map(c => c / lenghtSum * REPEAT)
-const lineDurationsAggreg = lineDurations.reduce((a, c) => [...a, (a[a.length - 1] | 0) + c], [])
+const SHAPE = [[58.43, 50],[32.5, 35.05],[32.5, 95.68],[19.19, 88],[19.19, 12],[71.73, 42.35]]
+const tracerPointsBoundaries = {
+    min: [[34,7],[58,21],[96,42],[45,72],[33,19],[99,43],[86.31,57.11]],
+    max: [[23,13],[52,28],[73,42],[33,65],[45,12.5],[99,57],[86.31,57.11]]
+}
+let tracerPoints,lineLenghts,lenghtSum,lineDurations,lineDurationsAggreg
+
+function updateTracerPoints(){
+    tracerPoints = tracerPointsBoundaries.min.map((_,i) => {
+        if(i==0 && tracerPoints) {
+            let last = tracerPoints[tracerPoints.length-1].map(coord => coord-50)
+            let deg = 120 * Math.PI / 180
+            let x = last[0] * Math.cos(deg) + last[1] * Math.sin(deg)
+            let y = -last[0] * Math.sin(deg) + last[1] * Math.cos(deg)
+            return [x+50,y+50]
+        }
+        let min = tracerPointsBoundaries.min[i]
+        let max = tracerPointsBoundaries.max[i]
+        return [between(min[0],max[0]), between(min[1],max[1])]
+    })
+    lineLenghts = mapSubsequent(tracerPoints, hypdiff)
+    lenghtSum = lineLenghts.reduce((a, c) => a + c)
+    lineDurations = lineLenghts.map(c => c / lenghtSum * REPEAT)
+    lineDurationsAggreg = lineDurations.reduce((a, c) => [...a, (a[a.length - 1] | 0) + c], [])
+}
+
+function between(a,b) {
+    let rand = 0.25 + Math.random() / 2
+    return a + (b-a) * rand
+}
 
 let start = null
 let part = 0
@@ -15,6 +39,7 @@ let part = 0
 const canvas = document.querySelector('.logo')
 const ctx = canvas.getContext('2d');
 setCanvasDimensions()
+updateTracerPoints()
 window.requestAnimationFrame(step)
 
 function mapSubsequent(array, mapper) {
@@ -62,12 +87,11 @@ function rotate(degrees) {
 
 function setCanvasDimensions() {
     canvas.height = canvas.width = canvas.clientWidth * window.devicePixelRatio
-    ctx.scale(1.5, 1.5)
-    ctx.translate(...scale(-22, -16))
+    ctx.translate(...scale(-8, 0))
 }
 
 function clearCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width*2, canvas.height*2);
 }
 
 function drawWireframe(line, except) {
@@ -168,7 +192,7 @@ function step(timestamp) {
     let time = progress % REPEAT;
     let tracerIndex = lineDurationsAggreg.findIndex(b => time <= b);
     let tracerLast = tracerIndex == lineDurations.length - 1
-    let tracerInFront = tracerIndex < 2 || tracerLast
+    let tracerInFront = tracerIndex < 3 || tracerLast
     let wireframePart = (part+tracerLast) % PARTS
 
     clearCanvas()
@@ -178,6 +202,7 @@ function step(timestamp) {
     rotate(-120 * part)
     if (tracerInFront) drawWireframe(wireframePart, true)
     else drawWireframe()
+    if(part != nextPart) updateTracerPoints()
     part = nextPart
     window.requestAnimationFrame(step);
 }

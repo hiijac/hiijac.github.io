@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Traveller's Inventory</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@4.0/dist/vuetify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css"/>
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=roboto:400,500,700"/>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://cdn.jsdelivr.net/npm/vue@3.5/dist/vue.esm-browser.js",
+            "vuetify": "https://cdn.jsdelivr.net/npm/vuetify@4.0/dist/vuetify.esm.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <v-card class="ma-5">
+        <template v-slot:text>
+            <v-row>
+                <v-text-field
+                        v-model="findCategory"
+                        label="Find category"
+                        prepend-inner-icon="mdi-magnify"
+                        variant="outlined"
+                        hide-details
+                        single-line
+                ></v-text-field>
+                <v-text-field
+                        v-model="findName"
+                        label="Find name"
+                        prepend-inner-icon="mdi-magnify"
+                        variant="outlined"
+                        hide-details
+                        single-line
+                ></v-text-field>
+            </v-row>
+        </template>
+        <v-data-table
+                :headers="headers"
+                :items="filteredItems"
+                hide-default-footer
+                items-per-page="-1"
+        ></v-data-table>
+    </v-card>
+</div>
+
+<script type="module">
+    import {createApp, onBeforeMount, ref, computed} from "vue"
+    import {createVuetify} from "vuetify"
+
+    createApp({
+        setup() {
+            const debug = ref(false)
+            const items = ref([])
+
+            const findName = ref("")
+            const findCategory = ref("")
+
+            const filteredItems = computed(() => items.value.filter(i =>
+                i.NAME.toLowerCase().includes(findName.value.toLowerCase()) &&
+                i.CATEGORY.toLowerCase().includes(findCategory.value.toLowerCase())
+            ))
+
+            const basicHeaderNames = ['CATEGORY', 'NAME', 'TL', 'COST', 'PAGE']
+            const debugHeaderNames = ['TABLE TYPE']
+            const allHeaderNames = computed(() => {
+                let headers = [...basicHeaderNames]
+                if (debug.value) headers.push(...debugHeaderNames)
+                if (filteredItems.value.length < 1000) headers.push(...filteredItems.value.flatMap(item => Object.keys(item)))
+                if (!debug.value) headers = headers.filter(header => !debugHeaderNames.includes(header))
+                return [...new Set(headers)]
+            })
+            const headers = computed(() => allHeaderNames.value.map(h => ({title: h, key: h, nowrap: true})))
+
+            onBeforeMount(async () => {
+                const resp = await fetch('items.generated.json')
+                items.value = await resp.json()
+            })
+
+            return {
+                headers, findName, findCategory, filteredItems
+            }
+        }
+    }).use(createVuetify()).mount('#app')
+</script>
+</body>
+</html>

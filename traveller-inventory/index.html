@@ -63,7 +63,8 @@
 
             const filteredItems = computed(() => items.value.filter(i =>
                 i.NAME.toLowerCase().includes(findName.value.toLowerCase()) &&
-                i.CATEGORY.toLowerCase().includes(findCategory.value.toLowerCase())
+                i.CATEGORY.toLowerCase().includes(findCategory.value.toLowerCase()) &&
+                (debug.value || !i['TABLE TYPE'].startsWith('error'))
             ))
 
             const basicHeaderNames = ['CATEGORY', 'NAME', 'TL', 'COST', 'PAGE']
